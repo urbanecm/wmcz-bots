@@ -7,7 +7,7 @@ from collections import OrderedDict
 
 site = pywikibot.Site()
 genFactory = pagegenerators.GeneratorFactory(site)
-genFactory.handle_arg('-search:prefix:"Wikimedia Czech Republic/Reports/"')
+genFactory.handle_arg('-prefixindex:Wikimedia_Czech_Republic/Reports/')
 generator = genFactory.getCombinedGenerator()
 
 reports_years = {}
