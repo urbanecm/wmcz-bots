@@ -7,15 +7,17 @@ import json
 from datetime import datetime
 import pywikibot
 import pymysql
+import os
 
 site = pywikibot.Site('meta', 'meta')
 
 class WordPress():
 	def __init__(self):
 		self.conn = pymysql.connect(
-			database='wmcz_reports_p',
-			host='localhost',
-			user='public',
+			database='s53887__benes_reports_p',
+			host='tools-db',
+			read_default_file=os.path.expanduser("~/replica.my.cnf"),
+			charset='utf8mb4'
 		)
 	
 	def get_posts(self, category=None):
@@ -34,7 +36,7 @@ class WordPress():
 		with self.conn.cursor() as cur:
 			cur.execute('SELECT slug FROM news_tags WHERE post_id=%s', (post_id, ))
 			data = cur.fetchall()
-		return [x[0] for x in data]
+		return [x[0].replace('-en', '') for x in data]
 	
 
 if __name__ == "__main__":
@@ -94,3 +96,4 @@ if __name__ == "__main__":
 		
 		page.text = text
 		page.save("Bot: Prepare WMCZ's monthly report")
+		break
