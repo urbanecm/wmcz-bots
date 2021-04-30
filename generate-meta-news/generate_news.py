@@ -14,7 +14,7 @@ site = pywikibot.Site('meta', 'meta')
 class WordPress():
 	def __init__(self):
 		self.conn = pymysql.connect(
-			database='s53887__benes_reports_p',
+			database='s53887__wmcz_web_posts_p',
 			host='tools-db',
 			read_default_file=os.path.expanduser("~/replica.my.cnf"),
 			charset='utf8mb4'
