@@ -59,6 +59,8 @@ if __name__ == "__main__":
 			post_tag = "other"
 		else:
 			post_tag = post_tags[0] # TODO: support for multiple tags?
+		if post_tag == 'ostatni':
+			post_tag = 'other'
 		if not date_fmt in output_dict:
 			output_dict[date_fmt] = {}
 	
@@ -96,4 +98,3 @@ if __name__ == "__main__":
 		
 		page.text = text
 		page.save("Bot: Prepare WMCZ's monthly report")
-		break
