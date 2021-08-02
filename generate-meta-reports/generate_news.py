@@ -48,6 +48,17 @@ class WordPress():
 			data = cur.fetchall()
 		return [x[0].replace('-en', '') for x in data]
 	
+def translate_tag(tag_name_raw):
+	tag_name = tag_name_raw.replace('-en', '')
+	translations = {
+		'komunita-a-multimedia': 'Multimedia & Community Programs',
+		'edu': 'EDUcational Programs',
+		'wikidata': 'Wikidata & Tech Programs',
+		'ostatní': 'Other',
+		'ostatni': 'Other',
+		'other': 'Other',
+	}
+	return translations.get(tag_name, tag_name)
 
 if __name__ == "__main__":
 	wp = WordPress()
@@ -74,8 +85,9 @@ if __name__ == "__main__":
 			post_tag = "other"
 		else:
 			post_tag = post_tags[0] # TODO: support for multiple tags?
-		if post_tag == 'ostatni':
-			post_tag = 'other'
+
+		post_tag = translate_tag(post_tag)
+
 		if not date_fmt in output_dict:
 			output_dict[date_fmt] = {}
 	
