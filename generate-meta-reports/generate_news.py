@@ -8,6 +8,7 @@ from datetime import datetime
 import pywikibot
 import pymysql
 import os
+import sys
 
 site = pywikibot.Site('meta', 'meta')
 
@@ -20,16 +21,25 @@ class WordPress():
 			charset='utf8mb4'
 		)
 	
-	def get_posts(self, category=None):
-		if category is None:
-			with self.conn.cursor(pymysql.cursors.DictCursor) as cur:
+	def get_posts(self, category=None, date_prefix=None):
+		params = []
+		conds = []
+
+		if category is not None:
+			conds.append('ID IN (SELECT post_id FROM news_category WHERE slug=%s)')
+			params.append(category)
+
+		if date_prefix is not None:
+			conds.append('post_date_gmt LIKE %s')
+			params.append('%s-%%' % date_prefix)
+
+		with self.conn.cursor(pymysql.cursors.DictCursor) as cur:
+			if len(conds) == 0:
 				cur.execute('SELECT * FROM news_web')
-				data = cur.fetchall()
-		else:
-			with self.conn.cursor(pymysql.cursors.DictCursor) as cur:
-				cur.execute('SELECT * FROM news_web WHERE ID IN (SELECT post_id FROM news_category WHERE slug=%s)', (category, ))
-				data = cur.fetchall()
-		
+			else:
+				cur.execute('SELECT * FROM news_web WHERE %s' % ' AND '.join(conds), tuple(params))
+			data = cur.fetchall()
+
 		return data
 	
 	def get_post_tags(self, post_id):
@@ -41,7 +51,12 @@ class WordPress():
 
 if __name__ == "__main__":
 	wp = WordPress()
-	posts = wp.get_posts(category="nezarazene-en")
+
+	date_prefix = None
+	if len(sys.argv) == 2:
+		date_prefix = sys.argv[1]
+
+	posts = wp.get_posts(category="nezarazene-en", date_prefix=date_prefix)
 
 	output_dict = {}
 	META_PAGE_PREFIX = "Wikimedia Czech Republic/Reports"
