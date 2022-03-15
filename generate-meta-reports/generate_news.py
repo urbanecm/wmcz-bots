@@ -52,6 +52,7 @@ def translate_tag(tag_name_raw):
 	tag_name = tag_name_raw.replace('-en', '')
 	translations = {
 		'komunita-a-multimedia': 'Multimedia & Community Programs',
+		'community-and-multimedia': 'Multimedia & Community Programs',
 		'edu': 'EDUcational Programs',
 		'wikidata': 'Wikidata & Tech Programs',
 		'ostatní': 'Other',
