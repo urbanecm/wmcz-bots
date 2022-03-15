@@ -9,6 +9,7 @@ import pywikibot
 import pymysql
 import os
 import sys
+import urllib.parse
 
 site = pywikibot.Site('meta', 'meta')
 
@@ -63,6 +64,7 @@ if __name__ == "__main__":
 
 	output_dict = {}
 	META_PAGE_PREFIX = "Wikimedia Czech Republic/Reports"
+	ERROR_PAGE_TITLE = "User:Wikimedia Czech Republic's bot/Reports/Errors"
 	for post in posts:
 		d = post.get('post_date_gmt')
 		date_fmt = d.strftime('%B %Y')
@@ -115,5 +117,16 @@ if __name__ == "__main__":
 			for post in output_dict[date_fmt][tag]:
 				text += post + "\n"
 		
+		f = open('/data/project/wmcz/public_html/.wmcz_meta_reports/%s.txt' % date_fmt, 'w')
+		f.write(text)
+		f.close()
+
 		page.text = text
-		page.save("Bot: Prepare WMCZ's monthly report")
+		try:
+			page.save("Bot: Prepare WMCZ's monthly report")
+		except pywikibot.exceptions.SpamblacklistError:
+			print('ERROR: SpamblacklistError, reporting to meta')
+			errorPage = pywikibot.Page(site, ERROR_PAGE_TITLE)
+			backupUrl = 'https://wmcz.toolforge.org/.wmcz_meta_reports/%s.txt' % urllib.parse.quote(date_fmt)
+			errorPage.text += '\n* %s: spam blacklist hit ([%s content available])' % (date_fmt, backupUrl)
+			errorPage.save('Bot: Report an error')
