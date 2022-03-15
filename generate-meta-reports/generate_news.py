@@ -50,16 +50,7 @@ class WordPress():
 	
 def translate_tag(tag_name_raw):
 	tag_name = tag_name_raw.replace('-en', '')
-	translations = {
-		'komunita-a-multimedia': 'Multimedia & Community Programs',
-		'community-and-multimedia': 'Multimedia & Community Programs',
-		'edu': 'EDUcational Programs',
-		'wikidata': 'Wikidata & Tech Programs',
-		'ostatní': 'Other',
-		'ostatni': 'Other',
-		'other': 'Other',
-	}
-	return translations.get(tag_name, tag_name)
+	return "{{User:Wikimedia Czech Republic's bot/program-en|%s}}" % tag_name
 
 if __name__ == "__main__":
 	wp = WordPress()
