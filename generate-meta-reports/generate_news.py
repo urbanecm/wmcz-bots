@@ -142,5 +142,5 @@ if __name__ == "__main__":
 			print('ERROR: SpamblacklistError, reporting to meta')
 			errorPage = pywikibot.Page(site, ERROR_PAGE_TITLE)
 			backupUrl = 'https://wmcz.toolforge.org/.wmcz_meta_reports/%s.txt' % urllib.parse.quote(date_fmt)
-			errorPage.text += '\n* %s: spam blacklist hit ([%s content available])' % (date_fmt, backupUrl)
+			errorPage.text += '\n* [[Wikimedia Czech Republic/Reports/%s|%s]]: spam blacklist hit ([%s content available])' % (date_fmt, date_fmt, backupUrl)
 			errorPage.save('Bot: Report an error')
