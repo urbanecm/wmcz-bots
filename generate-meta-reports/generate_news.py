@@ -11,6 +11,12 @@ import os
 import sys
 import urllib.parse
 
+TAGS = {
+	'komunita-a-multimedia': 'community',
+	'community-and-multimedia': 'community',
+	'wikidata': 'partnership-wikidata'
+}
+
 site = pywikibot.Site('meta', 'meta')
 
 class WordPress():
@@ -53,9 +59,10 @@ class WordPress():
 			cur.execute('SELECT slug FROM news_tags WHERE post_id=%s', (post_id, ))
 			data = cur.fetchall()
 		return [x[0].replace('-en', '') for x in data]
-	
+
 def translate_tag(tag_name_raw):
 	tag_name = tag_name_raw.replace('-en', '')
+	tag_name = TAGS.get(tag_name, tag_name)
 	return "{{User:Wikimedia Czech Republic's bot/program-en|%s}}" % tag_name
 
 if __name__ == "__main__":
