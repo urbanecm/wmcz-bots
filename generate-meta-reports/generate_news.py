@@ -4,7 +4,7 @@ import subprocess
 from subprocess import PIPE
 import requests
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 import pywikibot
 import pymysql
 import os
@@ -33,6 +33,11 @@ class WordPress():
 		if date_prefix is not None:
 			conds.append('post_date_gmt LIKE %s')
 			params.append('%s-%%' % date_prefix)
+
+		# never generate this months posts, as they are guaranteed to be incomplete
+		conds.append('post_date_gmt < %s')
+		d = datetime.today() - timedelta(days=30)
+		params.append(d.strftime('%Y-%m-%d'))
 
 		with self.conn.cursor(pymysql.cursors.DictCursor) as cur:
 			if len(conds) == 0:
