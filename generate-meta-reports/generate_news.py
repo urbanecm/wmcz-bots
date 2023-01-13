@@ -117,11 +117,20 @@ if __name__ == "__main__":
 	
 		text = "{{User:Wikimedia Czech Republic's bot/Reports/Header|title=%s|subtitle=Report}}\n\n" % date_fmt
 
-		for tag in output_dict[date_fmt]:
+		processed_tags = list(output_dict[date_fmt].keys())
+		processed_tags.sort()
+
+		# ensure other is the end, if present
+		other_translated = translate_tag('other')
+		if other_translated in processed_tags:
+			processed_tags.pop(processed_tags.index(other_translated))
+			processed_tags.append(other_translated)
+
+		for tag in processed_tags:
 			text += "== %s ==\n" % tag
 			for post in output_dict[date_fmt][tag]:
 				text += post + "\n"
-		
+
 		f = open('/data/project/wmcz/public_html/.wmcz_meta_reports/%s.txt' % date_fmt, 'w')
 		f.write(text)
 		f.close()
