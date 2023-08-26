@@ -9,10 +9,7 @@ import simplejson as json
 s = requests.Session()
 s.headers.update({'User-Agent': "Wikimedia Czech Republic's analytics service (tools.wmcz@tools.wmflabs.org)"})
 
-if len(sys.argv) >= 2:
-	tmpdir = sys.argv[1]
-else:
-	tmpdir = '/data/project/wmcz/tmp'
+BASE_DIR = '/data/project/wmcz/public_html/datasets/periodic/dashboard-data/daily'
 
 def format_row(row):
 	return "\t".join([str(x) for x in row])
@@ -32,9 +29,9 @@ def normalize_campaign(campaign):
 campaigns = ['studenti', 'wikimedia_čr__studenti_archiv', 'workshopy', 'knihovny', 'wikimedia_čr__knihovny_archiv', 'seniori', 'wikimedia_čr__senioři_všichni', 'wikimedia_čr__učitelé']
 
 coursesWritten = []
-coursesFile = open(os.path.join(tmpdir, 'courses.tsv'), 'w')
+coursesFile = open(os.path.join(BASE_DIR, 'wmcz_outreach_dashboard_courses.tsv'), 'w')
 coursesFile.write(format_row(["campaign", "course_slug", "course_start", "course_end", "student_count", "edit_count", "upload_count", "uploads_in_use", "upload_usages_count", "wikis"]) + "\n")
-coursesUsersFile = open(os.path.join(tmpdir, 'coursesUsers.tsv'), 'w')
+coursesUsersFile = open(os.path.join(BASE_DIR, 'wmcz_outreach_dashboard_courses_users.tsv'), 'w')
 coursesUsersFile.write(format_row(["campaign", "course_slug", "course_start", "user_role", "user_name", "user_tenure_bucket", "user_editcount_bucket"]) + "\n")
 for campaign_raw in campaigns:
 	r = s.get("https://outreachdashboard.wmflabs.org/campaigns/%s/users.json" % campaign_raw)
