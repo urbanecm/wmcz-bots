@@ -1,0 +1,12 @@
+# Toolforge Jobs declarations
+# https://wikitech.wikimedia.org/wiki/Help:Toolforge/Jobs_framework
+- name: generate-news-last-month
+  command: bash ~/wmczbot/generate-meta-reports/generate_news_last_month.sh
+  image: python3.11
+  schedule: "0 10 15 * *"
+  emails: onfailure
+- name: generate-news-mainpage
+  command: ~/venv/bin/python ~/wmczbot/generate-meta-reports/update_main_page.py
+  image: python3.11
+  schedule: "0 11 15 * *"
+  emails: onfailure

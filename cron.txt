@@ -29,5 +29,3 @@
 # m	h	dom	mon	dow	command
 0 9 * * * /usr/bin/jsub -N analytics-orchestrator-daily -release buster -once -quiet /data/project/wmcz/analytics/orchestrator/daily.sh
 0 9 16 * * /usr/bin/jsub -N analytics-orchestrator-monthly -release buster -once -quiet /data/project/wmcz/analytics/orchestrator/monthly.sh
-0 10 15 * * /usr/bin/jsub -N generate-reports -release buster -once -quiet /data/project/wmcz/wmczbot/generate-meta-reports/generate_news_last_month.sh
-0 11 15 * * /usr/bin/jsub -N update-mainpage -release buster -once -quiet /usr/bin/python3 /data/project/wmcz/wmczbot/generate-meta-reports/update_main_page.py
