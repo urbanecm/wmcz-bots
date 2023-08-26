@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-import subprocess
-from subprocess import PIPE
+import mwparserfromhell
 import requests
 import json
 from datetime import datetime, timedelta
@@ -16,6 +15,7 @@ TAGS = {
 	'community-and-multimedia': 'community',
 	'wikidata': 'partnership-wikidata'
 }
+PARSOID_API_URL = 'https://meta.wikimedia.org/api/rest_v1/transform/html/to/wikitext'
 
 site = pywikibot.Site('meta', 'meta')
 
@@ -100,10 +100,17 @@ if __name__ == "__main__":
 		if not post_tag in output_dict[date_fmt]:
 			output_dict[date_fmt][post_tag] = []
 
-		p = subprocess.Popen(['pandoc', '-f', 'html', '-t', 'mediawiki'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
-		out, err = p.communicate(input=post.get('post_content').encode('utf-8'))
-		post_content_wikitext = out.decode('utf-8')
+		r = requests.post(PARSOID_API_URL, json={
+			'html': post.get('post_content'),
+			'scrub_wikitext': True
+		})
+
+		# remove wordpress-like comments
+		post_content_wikitext_code = mwparserfromhell.parse(r.text)
+		for comment in post_content_wikitext_code.filter_comments():
+			post_content_wikitext_code.remove(comment)
 	
+		post_content_wikitext = post_content_wikitext_code.strip()
 		post_formatted = """
 === %(post_date)s: %(post_title)s ===
 %(post_content)s
