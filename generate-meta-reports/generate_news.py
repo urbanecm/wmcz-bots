@@ -65,6 +65,23 @@ def translate_tag(tag_name_raw):
 	tag_name = TAGS.get(tag_name, tag_name)
 	return "{{User:Wikimedia Czech Republic's bot/program-en|%s}}" % tag_name
 
+def html_to_wikitext(html):
+	r = requests.post(PARSOID_API_URL, json={
+		'html': html,
+		'scrub_wikitext': True
+	})
+
+	# remove wordpress-like comments
+	post_content_wikitext_code = mwparserfromhell.parse(r.text)
+	for comment in post_content_wikitext_code.filter_comments():
+		post_content_wikitext_code.remove(comment)
+
+	# normalizations
+	post_content_wikitext = post_content_wikitext_code.strip()
+	while '\n\n\n' in post_content_wikitext:
+		post_content_wikitext = post_content_wikitext.replace('\n\n\n', '\n\n')
+	return post_content_wikitext
+
 if __name__ == "__main__":
 	wp = WordPress()
 
@@ -100,17 +117,8 @@ if __name__ == "__main__":
 		if not post_tag in output_dict[date_fmt]:
 			output_dict[date_fmt][post_tag] = []
 
-		r = requests.post(PARSOID_API_URL, json={
-			'html': post.get('post_content'),
-			'scrub_wikitext': True
-		})
+		post_content_wikitext = html_to_wikitext(post.get('post_content'))
 
-		# remove wordpress-like comments
-		post_content_wikitext_code = mwparserfromhell.parse(r.text)
-		for comment in post_content_wikitext_code.filter_comments():
-			post_content_wikitext_code.remove(comment)
-	
-		post_content_wikitext = post_content_wikitext_code.strip()
 		post_formatted = """
 === %(post_date)s: %(post_title)s ===
 %(post_content)s
