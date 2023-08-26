@@ -10,11 +10,11 @@ import os
 import sys
 import urllib.parse
 
-TAGS = {
-	'komunita-a-multimedia': 'community',
-	'community-and-multimedia': 'community',
-	'wikidata': 'partnership-wikidata'
-}
+def get_tags():
+	r = requests.get('https://meta.wikimedia.org/wiki/User:Wikimedia_Czech_Republic%27s_bot/programs.json?action=raw&ctype=application/json')
+	return r.json()
+
+TAGS = get_tags()
 PARSOID_API_URL = 'https://meta.wikimedia.org/api/rest_v1/transform/html/to/wikitext'
 
 site = pywikibot.Site('meta', 'meta')
