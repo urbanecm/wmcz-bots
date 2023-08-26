@@ -10,3 +10,12 @@
   image: python3.11
   schedule: "0 11 15 * *"
   emails: onfailure
+- name: datasets-dashboard-data
+  command: ~/venv/bin/python ~/wmczbot/datasets/generate_dashboard_data.py
+  image: python3.11
+  schedule: "0 9 * * *"
+  emails: onfailure
+- name: datasets-import-benes-datasets
+  image: mariadb
+  schedule: "0 9 * * *"
+  emails: onfailure
