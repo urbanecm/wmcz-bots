@@ -16,6 +16,7 @@
   schedule: "0 9 * * *"
   emails: onfailure
 - name: datasets-import-benes-datasets
+  command: bash ~/wmczbot/datasets/import-benes-datasets.sh
   image: mariadb
   schedule: "0 9 * * *"
   emails: onfailure
